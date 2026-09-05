@@ -1,0 +1,31 @@
+product_id,name,category,unit_cost,unit_price,reorder_point
+P001,Cola 500ml,Beverages,167.07,244.46,15
+P002,Orange Juice 1L,Beverages,190.56,249.61,20
+P003,Green Tea 250ml,Beverages,71.34,107.38,15
+P004,Energy Drink 250ml,Beverages,175.64,229.6,15
+P005,Mineral Water 1L,Beverages,155.81,215.46,15
+P006,Potato Chips 90g,Snacks,26.85,42.86,20
+P007,Salted Peanuts 200g,Snacks,73.51,108.35,15
+P008,Choco Cookies 150g,Snacks,149.09,215.42,30
+P009,Namkeen Mix 200g,Snacks,70.7,105.32,25
+P010,Popcorn 100g,Snacks,206.17,318.53,15
+P011,Toned Milk 500ml,Dairy,194.53,296.0,20
+P012,Curd 400g,Dairy,180.57,240.19,25
+P013,Paneer 200g,Dairy,83.91,105.83,20
+P014,Butter 100g,Dairy,240.16,326.72,25
+P015,Cheese Slices 200g,Dairy,43.51,58.46,30
+P016,Shampoo 200ml,Personal Care,42.24,55.92,25
+P017,Toothpaste 100g,Personal Care,158.86,251.0,15
+P018,Soap Bar 125g,Personal Care,187.84,292.42,15
+P019,Hand Wash 250ml,Personal Care,243.82,331.63,30
+P020,Face Wash 100g,Personal Care,38.12,56.39,25
+P021,Dish Wash Liquid 500ml,Household,210.76,292.63,25
+P022,Detergent Powder 1kg,Household,152.79,239.89,15
+P023,Floor Cleaner 500ml,Household,30.54,43.08,20
+P024,Toilet Cleaner 500ml,Household,197.81,265.6,15
+P025,Air Freshener 250ml,Household,216.72,289.61,15
+P026,Rice 5kg,Staples,107.43,155.4,30
+P027,Wheat Flour 5kg,Staples,166.21,223.05,25
+P028,Sugar 1kg,Staples,57.41,83.51,25
+P029,Cooking Oil 1L,Staples,68.19,106.67,25
+P030,Toor Dal 1kg,Staples,181.42,252.14,15

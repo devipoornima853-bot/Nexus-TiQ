@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Store Copilot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c1b19;
+    --paper:#f1eee4;
+    --paper-raised:#ffffff;
+    --line:#d8d2c2;
+    --muted:#726b5c;
+    --brick:#a83e2c;
+    --brick-bg:#f6e6e1;
+    --khaki:#8c7851;
+    --khaki-bg:#f2ecdd;
+    --fern:#3f6b3a;
+    --fern-bg:#e6efe0;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Source Sans 3', sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .num{font-family:'IBM Plex Mono', monospace;}
+  header{
+    background:var(--ink);
+    color:var(--paper);
+    padding:22px 28px 20px;
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+  }
+  header h1{
+    font-family:'Zilla Slab', serif;
+    font-weight:700;
+    font-size:1.5rem;
+    margin:0;
+    letter-spacing:0.2px;
+  }
+  header .asof{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.8rem;
+    color:#c8c2b3;
+  }
+  .store-tabs{
+    display:flex;
+    gap:2px;
+    background:var(--ink);
+    padding:0 28px;
+    overflow-x:auto;
+    border-bottom:1px solid #000;
+  }
+  .store-tabs button{
+    background:transparent;
+    border:none;
+    color:#a89f8c;
+    padding:10px 14px;
+    font-family:'Source Sans 3', sans-serif;
+    font-size:0.85rem;
+    cursor:pointer;
+    border-bottom:2px solid transparent;
+    white-space:nowrap;
+  }
+  .store-tabs button.active{
+    color:var(--paper);
+    border-bottom:2px solid var(--khaki);
+  }
+  main{
+    display:grid;
+    grid-template-columns:minmax(320px, 1fr) minmax(360px, 1.1fr);
+    gap:0;
+    max-width:1180px;
+    margin:0 auto;
+    min-height:70vh;
+  }
+  @media (max-width: 860px){ main{grid-template-columns:1fr;} }
+
+  .attention{
+    padding:24px 28px;
+    border-right:1px solid var(--line);
+  }
+  @media (max-width: 860px){ .attention{border-right:none; border-bottom:1px solid var(--line);} }
+
+  .attention h2{
+    font-family:'Zilla Slab', serif;
+    font-size:1.05rem;
+    margin:0 0 4px;
+  }
+  .attention .lede{
+    color:var(--muted);
+    font-size:0.85rem;
+    margin:0 0 18px;
+  }
+  .section{margin-bottom:24px;}
+  .section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    border-bottom:1px solid var(--line);
+    padding-bottom:6px;
+    margin-bottom:8px;
+  }
+  .section-head h3{
+    font-size:0.78rem;
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    margin:0;
+    color:var(--muted);
+    font-weight:600;
+  }
+  .section-head .count{font-family:'IBM Plex Mono', monospace; font-size:0.78rem; color:var(--muted);}
+  .row{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    padding:8px 0;
+    border-bottom:1px dashed var(--line);
+    font-size:0.9rem;
+  }
+  .row:last-child{border-bottom:none;}
+  .row .name{flex:1; min-width:0;}
+  .row .name .store{display:block; color:var(--muted); font-size:0.76rem;}
+  .row .metric{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.82rem;
+    text-align:right;
+    white-space:nowrap;
+    padding:2px 8px;
+    border-radius:3px;
+  }
+  .metric.risk{background:var(--brick-bg); color:var(--brick);}
+  .metric.slow{background:var(--khaki-bg); color:var(--khaki);}
+  .metric.spike{background:var(--fern-bg); color:var(--fern);}
+  .metric.drop{background:var(--brick-bg); color:var(--brick);}
+  .empty{color:var(--muted); font-size:0.85rem; font-style:italic;}
+
+  .chat{
+    display:flex;
+    flex-direction:column;
+    padding:24px 28px;
+    height:70vh;
+  }
+  .chat h2{
+    font-family:'Zilla Slab', serif;
+    font-size:1.05rem;
+    margin:0 0 4px;
+  }
+  .chat .lede{color:var(--muted); font-size:0.85rem; margin:0 0 16px;}
+  .thread{
+    flex:1;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    padding-right:4px;
+  }
+  .msg{max-width:92%; font-size:0.92rem; line-height:1.5;}
+  .msg.user{align-self:flex-end; text-align:right;}
+  .msg .bubble{
+    display:inline-block;
+    padding:10px 14px;
+    border-radius:4px;
+    text-align:left;
+    white-space:pre-wrap;
+  }
+  .msg.user .bubble{background:var(--ink); color:var(--paper);}
+  .msg.bot .bubble{background:var(--paper-raised); border:1px solid var(--line);}
+  .msg .flag{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    color:var(--muted);
+    margin-top:4px;
+  }
+  form{
+    display:flex;
+    gap:8px;
+    margin-top:14px;
+    border-top:1px solid var(--line);
+    padding-top:14px;
+  }
+  input[type=text]{
+    flex:1;
+    padding:10px 12px;
+    border:1px solid var(--line);
+    border-radius:4px;
+    font-family:'Source Sans 3', sans-serif;
+    font-size:0.92rem;
+    background:var(--paper-raised);
+  }
+  input[type=text]:focus{outline:2px solid var(--khaki); outline-offset:1px;}
+  button.send{
+    background:var(--ink);
+    color:var(--paper);
+    border:none;
+    padding:10px 18px;
+    border-radius:4px;
+    font-size:0.88rem;
+    cursor:pointer;
+  }
+  button.send:disabled{opacity:0.5; cursor:default;}
+  .examples{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;}
+  .examples button{
+    background:none;
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:5px 11px;
+    font-size:0.76rem;
+    color:var(--muted);
+    cursor:pointer;
+  }
+  .examples button:hover{border-color:var(--khaki); color:var(--ink);}
+</style>
+</head>
+<body>
+<header>
+  <h1>Store Manager's Copilot</h1>
+  <span class="asof" id="asof">loading data…</span>
+</header>
+<div class="store-tabs" id="storeTabs"></div>
+
+<main>
+  <section class="attention">
+    <h2>Today's attention list</h2>
+    <p class="lede">Every figure below comes straight from sales and stock records — nothing here is a guess.</p>
+
+    <div class="section">
+      <div class="section-head"><h3>Stock-out risk (next 7 days)</h3><span class="count" id="riskCount"></span></div>
+      <div id="riskList"></div>
+    </div>
+    <div class="section">
+      <div class="section-head"><h3>Slow movers (30 days)</h3><span class="count" id="slowCount"></span></div>
+      <div id="slowList"></div>
+    </div>
+    <div class="section">
+      <div class="section-head"><h3>Sales spikes &amp; drops</h3><span class="count" id="moveCount"></span></div>
+      <div id="moveList"></div>
+    </div>
+  </section>
+
+  <section class="chat">
+    <h2>Ask the copilot</h2>
+    <p class="lede">Plain-language questions, answered with the numbers behind them.</p>
+    <div class="examples">
+      <button data-q="What's about to run out?">What's about to run out?</button>
+      <button data-q="Which products aren't moving?">Which products aren't moving?</button>
+      <button data-q="How did Energy Drink 250ml do this month?">Energy Drink this month?</button>
+      <button data-q="What's the weather like today?">Off-topic question</button>
+    </div>
+    <div class="thread" id="thread"></div>
+    <form id="askForm">
+      <input type="text" id="question" placeholder="e.g. What's running low at T Nagar?" autocomplete="off" />
+      <button class="send" type="submit" id="sendBtn">Ask</button>
+    </form>
+  </section>
+</main>
+
+<script>
+let currentStore = "";
+let stores = [];
+
+function fmt(n){ return n; }
+
+async function loadStores(){
+  const res = await fetch('/api/stores');
+  stores = await res.json();
+  const tabs = document.getElementById('storeTabs');
+  tabs.innerHTML = '';
+  const allBtn = document.createElement('button');
+  allBtn.textContent = 'All stores';
+  allBtn.className = 'active';
+  allBtn.onclick = () => selectStore('', allBtn);
+  tabs.appendChild(allBtn);
+  stores.forEach(s => {
+    const b = document.createElement('button');
+    b.textContent = s.name;
+    b.onclick = () => selectStore(s.store_id, b);
+    tabs.appendChild(b);
+  });
+}
+
+function selectStore(storeId, btn){
+  currentStore = storeId;
+  document.querySelectorAll('.store-tabs button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  loadBriefing();
+}
+
+async function loadBriefing(){
+  const url = currentStore ? `/api/briefing?store_id=${currentStore}` : '/api/briefing';
+  const res = await fetch(url);
+  const data = await res.json();
+  document.getElementById('asof').textContent = 'data as of ' + data.as_of;
+  renderRisk(data.stockout_risks);
+  renderSlow(data.slow_movers);
+  renderMoves(data.sales_moves);
+}
+
+function row(name, store, metricText, metricClass){
+  return `<div class="row"><div class="name">${name}<span class="store">${store}</span></div>
+    <div class="metric ${metricClass}">${metricText}</div></div>`;
+}
+
+function renderRisk(items){
+  document.getElementById('riskCount').textContent = items.length;
+  document.getElementById('riskList').innerHTML = items.length ? items.map(i =>
+    row(i.product_name, i.store_id, `${i.days_left}d left · ${i.quantity_on_hand} units`, 'risk')
+  ).join('') : '<p class="empty">Nothing projected to run out within 7 days.</p>';
+}
+function renderSlow(items){
+  document.getElementById('slowCount').textContent = items.length;
+  document.getElementById('slowList').innerHTML = items.length ? items.map(i =>
+    row(i.product_name, i.store_id, `${i.units_sold_in_window} sold / ${i.quantity_on_hand} on hand`, 'slow')
+  ).join('') : '<p class="empty">No slow movers with the current thresholds.</p>';
+}
+function renderMoves(items){
+  document.getElementById('moveCount').textContent = items.length;
+  document.getElementById('moveList').innerHTML = items.length ? items.map(i =>
+    row(i.product_name, i.store_id, `${i.pct_change > 0 ? '+' : ''}${i.pct_change}%`, i.direction)
+  ).join('') : '<p class="empty">No sales spikes or drops beyond the threshold.</p>';
+}
+
+function addMessage(text, who, flag){
+  const thread = document.getElementById('thread');
+  const div = document.createElement('div');
+  div.className = 'msg ' + who;
+  div.innerHTML = `<span class="bubble">${text.replace(/</g,'&lt;')}</span>${flag ? `<span class="flag">${flag}</span>` : ''}`;
+  thread.appendChild(div);
+  thread.scrollTop = thread.scrollHeight;
+}
+
+async function ask(question){
+  addMessage(question, 'user');
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  addMessage('Checking the data…', 'bot');
+  const thread = document.getElementById('thread');
+  try{
+    const res = await fetch('/api/ask', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({question, store_id: currentStore || null})
+    });
+    const data = await res.json();
+    thread.removeChild(thread.lastChild);
+    addMessage(data.answer, 'bot', data.llm_used ? 'grounded · phrased by Gemini' : 'grounded · template fallback (no LLM)');
+  }catch(e){
+    thread.removeChild(thread.lastChild);
+    addMessage('Something went wrong reaching the copilot. Please try again.', 'bot');
+  }
+  btn.disabled = false;
+}
+
+document.getElementById('askForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const input = document.getElementById('question');
+  const q = input.value.trim();
+  if(!q) return;
+  input.value = '';
+  ask(q);
+});
+
+document.querySelectorAll('.examples button').forEach(b => {
+  b.addEventListener('click', () => ask(b.dataset.q));
+});
+
+loadStores().then(loadBriefing);
+</script>
+</body>
+</html>
